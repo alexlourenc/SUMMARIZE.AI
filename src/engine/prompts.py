@@ -1,60 +1,60 @@
 from langchain.prompts import PromptTemplate
 
-# 4. CUSTOM PROMPT TEMPLATES FOR DIFFERENT MODES
-# 4. TEMPLATES DE PROMPT CUSTOMIZADOS PARA DIFERENTES MODOS
+# 3. CUSTOM PROMPT TEMPLATES FOR DIFFERENT MODES
+# 3. TEMPLATES DE PROMPT CUSTOMIZADOS PARA DIFERENTES MODOS
 
 class PromptFactory:
     """
-    Factory to manage different summarization styles.
-    Factory para gerenciar diferentes estilos de sumarização.
+    Factory to manage different summarization styles and formats.
+    Factory para gerenciar diferentes estilos e formatos de sumarização.
     """
 
     @staticmethod
-    def get_map_prompt():
+    def get_map_prompt() -> PromptTemplate:
         """
-        Standard prompt to summarize each individual chunk.
-        Prompt padrão para sumarizar cada pedaço individual.
+        Standard prompt to summarize each individual text chunk.
+        Prompt padrão para sumarizar cada pedaço de texto individual.
         """
         template = """
-        Write a concise summary of the following text:
+        Write a concise summary of the following text, preserving key technical terms:
         "{text}"
         CONCISE SUMMARY:
         """
         return PromptTemplate.from_template(template)
 
     @staticmethod
-    def get_reduce_prompt(mode: str = "concise"):
+    def get_reduce_prompt(mode: str = "executive") -> PromptTemplate:
         """
-        Returns a specific prompt based on the user's chosen mode.
-        Retorna um prompt específico com base no modo escolhido pelo usuário.
+        Returns a specific consolidation prompt based on the chosen mode.
+        Retorna um prompt de consolidação específico baseado no modo escolhido.
         """
         
-        # Mode: Short Summary / Resumo Curto
+        # Mode: Short Summary (One paragraph) / Resumo Curto (Um parágrafo)
         if mode == "short":
             template = """
-            Write a final professional summary of the following summarized points in exactly one paragraph:
+            Synthesize the following points into a single, professional paragraph:
             "{text}"
             SHORT SUMMARY:
             """
         
-        # Mode: Bullet Points / Pontos Chave
+        # Mode: Bullet Points (Action oriented) / Pontos Chave (Focado em ação)
         elif mode == "bullets":
             template = """
-            Based on the following summaries, extract the main decisions and key action points in bullet points:
+            Based on the provided summaries, extract the main decisions and action points as bullet points:
             "{text}"
-            KEY POINTS:
+            KEY ACTION POINTS:
             """
             
-        # Mode: Executive Briefing (Detailed) / Resumo Executivo (Detalhado)
+        # Mode: Executive Briefing (Structured) / Resumo Executivo (Estruturado)
         else:
             template = """
-            Write a detailed executive briefing based on the following summaries. 
-            Include an introduction, main findings, and a conclusion:
+            Create a structured executive briefing from the summaries below. 
+            Include sections for 'Introduction', 'Main Findings', and 'Conclusion':
             "{text}"
             EXECUTIVE BRIEFING:
             """
             
         return PromptTemplate.from_template(template)
 
-# Engineering Note: These templates ensure consistent output formatting
-# Nota de Engenharia: Estes templates garantem formatação de saída consistente
+# Engineering Note: Prompt engineering is key to avoiding LLM hallucinations.
+# Nota de Engenharia: A engenharia de prompt é fundamental para evitar alucinações da LLM.

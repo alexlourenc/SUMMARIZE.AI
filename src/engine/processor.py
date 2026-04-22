@@ -6,8 +6,8 @@ from langchain_core.documents import Document
 
 class TextProcessor:
     """
-    Class responsible for splitting long documents into manageable chunks.
-    Classe responsável por dividir documentos longos em pedaços gerenciáveis.
+    Class responsible for splitting long documents into manageable chunks for the LLM.
+    Classe responsável por dividir documentos longos em pedaços gerenciáveis para o LLM.
     """
 
     def __init__(self, chunk_size: int = 2000, chunk_overlap: int = 200):
@@ -15,8 +15,8 @@ class TextProcessor:
         Initializes the splitter with defined size and overlap.
         Inicializa o divisor com tamanho e sobreposição definidos.
         """
-        # We use 2000 characters to balance context and LLM performance
-        # Usamos 2000 caracteres para equilibrar contexto e performance do LLM
+        # Recursive splitter tries to keep paragraphs and sentences together
+        # O divisor recursivo tenta manter parágrafos e frases juntos
         self.splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
@@ -26,18 +26,18 @@ class TextProcessor:
 
     def process_documents(self, documents: list[Document]) -> list[Document]:
         """
-        Splits the loaded documents into smaller chunks.
-        Divide os documentos carregados em pedaços menores.
+        Splits documents into smaller chunks while preserving metadata.
+        Divide documentos em pedaços menores preservando os metadados.
         """
         if not documents:
+            # Safety check for empty document lists
+            # Verificação de segurança para listas de documentos vazias
             return []
             
-        # The split_documents method ensures metadata is preserved across chunks
-        # O método split_documents garante que os metadados sejam preservados nos pedaços
         chunks = self.splitter.split_documents(documents)
         
-        print(f"Original docs: {len(documents)} -> Total chunks: {len(chunks)}")
-        # Documentos originais: {len(documents)} -> Total de pedaços: {len(chunks)}
+        print(f"Status: {len(documents)} doc(s) split into {len(chunks)} chunks.")
+        # Status: {len(documents)} doc(s) divididos em {len(chunks)} pedaços.
         
         return chunks
 
@@ -45,6 +45,6 @@ class TextProcessor:
 # Exemplo de execução para validação
 if __name__ == "__main__":
     processor = TextProcessor()
-    # Dummy document for testing / Documento fictício para teste
-    sample_doc = [Document(page_content="Long text... " * 500)]
+    sample_doc = [Document(page_content="Validation text content... " * 100)]
     final_chunks = processor.process_documents(sample_doc)
+    print("Process finished successfully. / Processo finalizado com sucesso.")
